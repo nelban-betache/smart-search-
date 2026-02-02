@@ -419,6 +419,16 @@ body {
         min-height: 48px; /* Minimum touch target size */
     }
 }
+/* Version */
+.version {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
 </style>
 
 <body>
@@ -456,8 +466,12 @@ body {
         <input name="q" placeholder="Search Pinterest" required autocomplete="off">
         <button type="submit" class="pinterest"><i class="fa-brands fa-pinterest"></i>Pinterest</button>
     </form>
+    
+    <!-- Version -->
+<div class="version">Version 1.0.0.0</div>
 </div>
 
+    
 <!-- Floating Suggestion Button -->
 <div class="floating-container">
     <button class="floating-button" title="Send Suggestion" aria-label="Send Suggestion">
