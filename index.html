@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Search Hub</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #020617, #0f172a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+    padding: 26px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.45);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.container h2 {
+    text-align: center;
+    color: #fff;
+    font-weight: 600;
+}
+.container h3 {
+    text-align: center;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Form */
+.search-form {
+    display: flex;
+    gap: 12px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 15px;
+    border-radius: 14px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+.search-form input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.search-form button {
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: none;
+    font-size: 16px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.search-form button:hover {
+    transform: translateY(-2px);
+}
+
+.search-form button:active {
+    transform: scale(0.96);
+}
+
+/* Brand colors */
+.youtube { background: linear-gradient(135deg, #ff0000, #cc0000); }
+.google { background: linear-gradient(135deg, #4285F4, #1a73e8); }
+.reddit { background: linear-gradient(135deg, #ff4500, #ff6a33); }
+.github { background: linear-gradient(135deg, #333333, #000000); }
+.pinterest { background: linear-gradient(135deg, #e60023, #b8001c); }
+
+/* Mobile */
+@media (max-width: 480px) {
+    .search-form {
+        flex-direction: column;
+    }
+}
+
+/* Floating Button */
+.floating-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+}
+
+.floating-button {
+    background: #ffcc00;
+    color: #000;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 28px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.floating-button:hover {
+    transform: translateY(-5px);
+    background: #ffdb4d;
+}
+
+/* Suggestion Form */
+.suggestion-form {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    background: rgba(255,255,255,0.95);
+    padding: 20px;
+    border-radius: 12px;
+    width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.suggestion-form h3 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.suggestion-form input,
+.suggestion-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+}
+
+.suggestion-form button {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background: #4CAF50;
+    color: #fff;
+    transition: 0.2s;
+}
+
+.suggestion-form button:hover {
+    background: #45a049;
+}
+
+</style>
+
+<body>
+
+<div class="container">
+    <h2>🚀 Smart Search Hub</h2>
+    <h3>by nelbanXchatgpt</h3>
+
+    <!-- YouTube -->
+    <form action="https://www.youtube.com/results" method="get" class="search-form">
+        <input name="search_query" placeholder="Search YouTube" required>
+        <button class="youtube"><i class="fa-brands fa-youtube"></i>YouTube</button>
+    </form>
+
+    <!-- Google -->
+    <form action="https://www.google.com/search" method="get" class="search-form">
+        <input name="q" placeholder="Search Google" required>
+        <button class="google"><i class="fa-brands fa-google"></i>Google</button>
+    </form>
+
+    <!-- Reddit -->
+    <form action="https://www.reddit.com/search/" method="get" class="search-form">
+        <input name="q" placeholder="Search Reddit" required>
+        <button class="reddit"><i class="fa-brands fa-reddit-alien"></i>Reddit</button>
+    </form>
+
+    <!-- GitHub -->
+    <form action="https://github.com/search" method="get" class="search-form">
+        <input name="q" placeholder="Search GitHub" required>
+        <button class="github"><i class="fa-brands fa-github"></i>GitHub</button>
+    </form>
+
+    <!-- Pinterest -->
+    <form action="https://www.pinterest.com/search/pins/" method="get" class="search-form">
+        <input name="q" placeholder="Search Pinterest" required>
+        <button class="pinterest"><i class="fa-brands fa-pinterest"></i>Pinterest</button>
+    </form>
+
+    <!-- Floating Suggestion Button -->
+<div class="floating-container">
+    <button class="floating-button" title="Send Suggestion">
+        <i class="fa-solid fa-lightbulb"></i>
+    </button>
+
+    <!-- Suggestion Form Popup -->
+    <div class="suggestion-form">
+        <h3>Suggest a Feature</h3>
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="message" placeholder="Your Suggestion" rows="4" required></textarea>
+        <button id="sendSuggestion">Send</button>
+        <button id="closeForm" style="background:#f44336;">Cancel</button>
+    </div>
+</div>
+
+    
+</div>
+<script>
+    // Refresh page when user navigates back to it
+    window.addEventListener("pageshow", function (event) {
+        // If page is loaded from cache (back button)
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+</script>
+<script>
+    window.addEventListener("pageshow", function () {
+        document.querySelectorAll("input").forEach(input => {
+            input.value = "";
+        });
+    });
+</script>
+
+    <script>
+const floatingBtn = document.querySelector('.floating-button');
+const suggestionForm = document.querySelector('.suggestion-form');
+const closeBtn = document.getElementById('closeForm');
+const sendBtn = document.getElementById('sendSuggestion');
+
+// Open form
+floatingBtn.addEventListener('click', () => {
+    suggestionForm.style.display = 'flex';
+});
+
+// Close form
+closeBtn.addEventListener('click', () => {
+    suggestionForm.style.display = 'none';
+});
+
+// Send suggestion
+sendBtn.addEventListener('click', () => {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    if(!name || !email || !message){
+        alert("Please fill in all fields!");
+        return;
+    }
+
+    // Encode mailto link
+    const subject = encodeURIComponent("Feature Suggestion from " + name);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nMessage: ${message}`);
+    const mailto = `mailto:nelbanbetache@gmail.com?subject=${subject}&body=${body}`;
+
+    // Open mail client
+    window.location.href = mailto;
+
+    // Close form
+    suggestionForm.style.display = 'none';
+
+    // Optional: Clear fields
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('message').value = '';
+});
+</script>
+
+</body>
+</html>
