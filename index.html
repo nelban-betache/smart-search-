@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Search Hub</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🚀 Smart Search Hub</h2>
+    <h3>by: code with nelban</h3>
+
+    <!-- YouTube -->
+    <form action="https://www.youtube.com/results" method="get" class="search-form" target="_blank">
+        <input name="search_query" placeholder="Search YouTube" required autocomplete="off">
+        <button type="submit" class="youtube"><i class="fa-brands fa-youtube"></i>YouTube</button>
+    </form>
+
+    <!-- Google -->
+    <form action="https://www.google.com/search" method="get" class="search-form" target="_blank">
+        <input name="q" placeholder="Search Google" required autocomplete="off">
+        <button type="submit" class="google"><i class="fa-brands fa-google"></i>Google</button>
+    </form>
+
+    <!-- Reddit -->
+    <form action="https://www.reddit.com/search/" method="get" class="search-form" target="_blank">
+        <input name="q" placeholder="Search Reddit" required autocomplete="off">
+        <button type="submit" class="reddit"><i class="fa-brands fa-reddit-alien"></i>Reddit</button>
+    </form>
+
+    <!-- GitHub -->
+    <form action="https://github.com/search" method="get" class="search-form" target="_blank">
+        <input name="q" placeholder="Search GitHub" required autocomplete="off">
+        <button type="submit" class="github"><i class="fa-brands fa-github"></i>GitHub</button>
+    </form>
+
+    <!-- Pinterest -->
+    <form action="https://www.pinterest.com/search/pins/" method="get" class="search-form" target="_blank">
+        <input name="q" placeholder="Search Pinterest" required autocomplete="off">
+        <button type="submit" class="pinterest"><i class="fa-brands fa-pinterest"></i>Pinterest</button>
+    </form>
+    
+    <!-- Version -->
+    <div class="version">Version 1.0.0.0</div>
+</div>
+
+    
+<!-- Floating Suggestion Button -->
+<div class="floating-container">
+    <button class="floating-button" title="Send Suggestion" aria-label="Send Suggestion">
+        <i class="fa-solid fa-lightbulb"></i>
+    </button>
+</div>
+
+<!-- Modal Overlay with Suggestion Form -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="suggestion-form">
+        <div class="success-message" id="successMessage">
+            <i class="fa-solid fa-check-circle"></i> Thank you! Your suggestion has been sent.
+        </div>
+        
+        <h3>💡 Suggest a Feature</h3>
+        
+        <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" placeholder="Enter your name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Your Email</label>
+            <input type="email" id="email" placeholder="your.email@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="message">Your Suggestion</label>
+            <textarea id="message" placeholder="Tell us about your feature idea or feedback..." required></textarea>
+        </div>
+        
+        <div class="form-buttons">
+            <button type="button" id="sendSuggestion" class="btn-send">
+                <i class="fa-solid fa-paper-plane"></i> Send Suggestion
+            </button>
+            <button type="button" id="closeForm" class="btn-cancel">
+                <i class="fa-solid fa-times"></i> Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Custom JavaScript -->
+<script src="script.js"></script>
+
+</body>
+</html>
