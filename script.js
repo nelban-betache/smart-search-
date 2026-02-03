@@ -105,15 +105,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Create mailto link with proper formatting
-        const subject = encodeURIComponent(`Feature Suggestion from ${name}`);
-        const body = encodeURIComponent(
-            `Name: ${name}\n` +
-            `Email: ${email}\n` +
-            `\n--- Suggestion ---\n` +
-            `${message}\n` +
-            `\n-------------------\n` +
-            `Sent from Smart Search Hub`
-        );
+const subject = encodeURIComponent(`Product Feedback | Smart Search Hub`);
+
+const body = encodeURIComponent(
+    `SMART SEARCH HUB – PRODUCT FEEDBACK\n` +
+    `==================================\n\n` +
+
+    `Submitted By:\n` +
+    `• Name  : ${name}\n` +
+    `• Email : ${email}\n\n` +
+
+    `Feedback Details:\n` +
+    `${message}\n\n` +
+
+    `==================================\n` +
+    `Generated automatically via Smart Search Hub\n`
+);
+
         
         const mailto = `mailto:nelbanbetache@gmail.com?subject=${subject}&body=${body}`;
 
