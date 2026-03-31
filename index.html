@@ -1,60 +1,439 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Search Hub</title>
-    <link rel="icon" href="/icon.png" type="image/x-icon">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", system-ui, sans-serif; }
 
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="styles.css">
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #020617, #0f172a);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 540px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ── Header ── */
+        .hub-header {
+            text-align: center;
+            padding: 28px 32px 22px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .hub-header h2 { color: #fff; font-weight: 700; font-size: 28px; letter-spacing: -0.5px; }
+        .hub-header h3 { color: rgba(255,255,255,0.45); font-weight: 400; font-size: 13px; margin-top: 5px; }
+
+        /* ── Category Card ── */
+        .category-card {
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .category-icon {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; color: #fff; flex-shrink: 0;
+        }
+
+        .category-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        .category-count {
+            margin-left: auto;
+            font-size: 11px;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        /* Category accent colors */
+        .cat-video    .category-icon { background: linear-gradient(135deg,#ff0000,#cc0000); }
+        .cat-video    .category-title { color: #ff6b6b; }
+        .cat-video    .category-count { background: rgba(255,80,80,0.15); color: #ff6b6b; }
+
+        .cat-social   .category-icon { background: linear-gradient(135deg,#ff4500,#e03d00); }
+        .cat-social   .category-title { color: #ff8c6b; }
+        .cat-social   .category-count { background: rgba(255,100,60,0.15); color: #ff8c6b; }
+
+        .cat-dev      .category-icon { background: linear-gradient(135deg,#555,#1a1a1a); }
+        .cat-dev      .category-title { color: #94a3b8; }
+        .cat-dev      .category-count { background: rgba(148,163,184,0.15); color: #94a3b8; }
+
+        .cat-creative .category-icon { background: linear-gradient(135deg,#e60023,#b8001c); }
+        .cat-creative .category-title { color: #fc6d7c; }
+        .cat-creative .category-count { background: rgba(230,0,35,0.15); color: #fc6d7c; }
+
+        /* ── Search Row ── */
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.15s ease;
+        }
+
+        .search-row:last-child { border-bottom: none; }
+        .search-row:hover { background: rgba(255,255,255,0.03); }
+
+        .search-form {
+            display: contents; /* makes the form invisible so children flow into .search-row */
+        }
+
+        .search-row input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.1);
+            outline: none;
+            font-size: 15px;
+            background: rgba(255,255,255,0.09);
+            color: #fff;
+            transition: all 0.2s ease;
+        }
+
+        .search-row input:focus {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.25);
+        }
+
+        .search-row input::placeholder { color: rgba(255,255,255,0.45); }
+
+        .search-row button {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            min-width: 126px;
+        }
+
+        .search-row button:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .search-row button:active { transform: scale(0.97); }
+        .search-row button i { font-size: 15px; }
+
+        /* Brand colors */
+        .btn-youtube   { background: linear-gradient(135deg,#ff0000,#cc0000); }
+        .btn-google    { background: linear-gradient(135deg,#4285F4,#1a73e8); }
+        .btn-reddit    { background: linear-gradient(135deg,#ff4500,#e03d00); }
+        .btn-github    { background: linear-gradient(135deg,#555,#111); }
+        .btn-pinterest { background: linear-gradient(135deg,#e60023,#b8001c); }
+
+        /* ── Version ── */
+        .version { text-align: center; color: rgba(255,255,255,0.25); font-size: 12px; padding-bottom: 16px; }
+
+        /* ── Floating Button ── */
+        .floating-container { position: fixed; bottom: 28px; right: 28px; z-index: 999; }
+
+        .floating-button {
+            background: linear-gradient(135deg,#ffcc00,#ffaa00);
+            color: #000; width: 60px; height: 60px;
+            border-radius: 50%; font-size: 24px; border: none;
+            cursor: pointer; box-shadow: 0 6px 20px rgba(255,204,0,0.4);
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .floating-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(255,204,0,0.5); }
+
+        /* ── Modals shared ── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+
+        /* ── Suggestion Form ── */
+        .suggestion-form {
+            background: linear-gradient(135deg,#fff,#f8f9fa);
+            padding: 30px; border-radius: 20px; width: 100%; max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+
+        .suggestion-form h3 { color:#1a1a1a; font-size:21px; font-weight:600; margin-bottom:18px; text-align:center; }
+        .form-group { margin-bottom:13px; }
+        .form-group label { display:block; color:#444; font-size:13px; font-weight:500; margin-bottom:6px; }
+
+        .suggestion-form input,
+        .suggestion-form textarea {
+            width:100%; padding:11px 14px; border-radius:10px;
+            border:2px solid #e0e0e0; outline:none; font-size:14px;
+            font-family:inherit; transition:all 0.2s ease; background:#fff;
+        }
+
+        .suggestion-form input:focus,
+        .suggestion-form textarea:focus { border-color:#ffcc00; box-shadow:0 0 0 3px rgba(255,204,0,0.1); }
+        .suggestion-form textarea { resize:vertical; min-height:88px; }
+
+        .form-buttons { display:flex; gap:10px; margin-top:18px; }
+
+        .form-buttons button {
+            flex:1; padding:12px; border-radius:10px; border:none;
+            cursor:pointer; font-weight:600; font-size:14px; transition:all 0.2s ease;
+        }
+
+        .btn-send { background:linear-gradient(135deg,#4CAF50,#45a049); color:#fff; }
+        .btn-send:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(76,175,80,0.3); }
+        .btn-cancel { background:#f0f0f0; color:#666; }
+        .btn-cancel:hover { background:#e0e0e0; }
+
+        /* ── Results Popup ── */
+        .results-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+            z-index: 2000; justify-content: center; align-items: center; padding: 16px;
+        }
+        .results-overlay.active { display: flex; }
+
+        .results-popup {
+            width:100%; max-width:960px; height:85vh;
+            border-radius:20px; overflow:hidden;
+            box-shadow:0 32px 80px rgba(0,0,0,0.7);
+            display:flex; flex-direction:column; background:#0f172a;
+            animation:popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        @keyframes popIn { from { opacity:0; transform:scale(0.92) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
+
+        .results-header {
+            display:flex; align-items:center; gap:12px;
+            padding:13px 18px;
+            background:rgba(255,255,255,0.06);
+            border-bottom:1px solid rgba(255,255,255,0.1);
+            flex-shrink:0;
+        }
+
+        .platform-badge {
+            display:flex; align-items:center; gap:7px;
+            padding:5px 13px; border-radius:20px;
+            font-size:13px; font-weight:700; color:#fff; flex-shrink:0;
+        }
+
+        .search-label {
+            color:rgba(255,255,255,0.55); font-size:13px;
+            overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;
+        }
+        .search-label strong { color:#fff; }
+
+        .open-btn {
+            display:flex; align-items:center; gap:5px;
+            padding:6px 13px; border-radius:9px;
+            border:1px solid rgba(255,255,255,0.2);
+            background:rgba(255,255,255,0.08);
+            color:rgba(255,255,255,0.85);
+            font-size:12px; font-weight:500;
+            cursor:pointer; text-decoration:none;
+            transition:all 0.2s ease; flex-shrink:0;
+        }
+        .open-btn:hover { background:rgba(255,255,255,0.15); }
+
+        .close-btn {
+            width:34px; height:34px; border-radius:9px; border:none;
+            background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.8);
+            font-size:17px; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            transition:all 0.2s ease; flex-shrink:0;
+        }
+        .close-btn:hover { background:rgba(255,80,80,0.3); color:#fff; }
+
+        .iframe-wrapper { flex:1; position:relative; overflow:hidden; }
+        .iframe-wrapper iframe { width:100%; height:100%; border:none; display:block; }
+
+        .iframe-loader {
+            position:absolute; inset:0;
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center; gap:14px;
+            background:#0f172a; z-index:1; transition:opacity 0.3s ease;
+        }
+        .iframe-loader.hidden { opacity:0; pointer-events:none; }
+
+        .loader-spinner {
+            width:42px; height:42px;
+            border:3px solid rgba(255,255,255,0.1);
+            border-top-color:#fff; border-radius:50%;
+            animation:spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .loader-text { color:rgba(255,255,255,0.45); font-size:14px; }
+
+        .blocked-notice {
+            display:none; flex-direction:column;
+            align-items:center; justify-content:center;
+            gap:16px; padding:40px; height:100%; text-align:center;
+        }
+        .blocked-notice.visible { display:flex; }
+        .blocked-icon { font-size:50px; }
+        .blocked-notice h4 { color:#fff; font-size:20px; font-weight:600; }
+        .blocked-notice p { color:rgba(255,255,255,0.45); font-size:14px; max-width:360px; line-height:1.6; }
+
+        .open-full-btn {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:13px 26px; border-radius:12px;
+            background:#fff; color:#0f172a;
+            font-weight:700; font-size:14px;
+            text-decoration:none; border:none; cursor:pointer;
+            transition:all 0.2s ease;
+        }
+        .open-full-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,255,255,0.2); }
+
+        /* ── Mobile ── */
+        @media (max-width:600px) {
+            body { padding:16px 12px; }
+            .search-row { flex-direction:column; }
+            .search-row button { width:100%; min-width:unset; }
+            .results-popup { height:92vh; border-radius:14px; }
+            .results-header .search-label { display:none; }
+            .floating-container { bottom:18px; right:18px; }
+            .form-buttons { flex-direction:column; }
+        }
+
+        @media (prefers-reduced-motion:reduce) { * { animation:none !important; transition:none !important; } }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
-    <h2>🚀 Smart Search Hub</h2>
-    <h3>by: code with NLBN🥸</h3>
 
-    <!-- YouTube -->
-    <form action="https://www.youtube.com/results" method="get" class="search-form" target="_blank">
-        <input name="search_query" placeholder="Search YouTube" required autocomplete="off">
-        <button type="submit" class="youtube"><i class="fa-brands fa-youtube"></i>YouTube</button>
-    </form>
+    <!-- Header -->
+    <div class="hub-header">
+        <h2>🚀 Smart Search Hub</h2>
+        <h3>by: code with NLBN🥸</h3>
+    </div>
 
-    <!-- Google -->
-    <form action="https://www.google.com/search" method="get" class="search-form" target="_blank">
-        <input name="q" placeholder="Search Google" required autocomplete="off">
-        <button type="submit" class="google"><i class="fa-brands fa-google"></i>Google</button>
-    </form>
+    <!-- VIDEO -->
+    <div class="category-card cat-video">
+        <div class="category-header">
+            <div class="category-icon"><i class="fa-solid fa-play"></i></div>
+            <span class="category-title">Video</span>
+            <span class="category-count">1 platform</span>
+        </div>
+        <div class="search-row">
+            <form class="search-form"
+                  data-platform="YouTube" data-icon="fa-brands fa-youtube"
+                  data-url="https://www.youtube.com/results" data-param="search_query"
+                  data-color="linear-gradient(135deg,#ff0000,#cc0000)">
+                <input placeholder="Search YouTube…" required autocomplete="off">
+                <button type="submit" class="btn-youtube"><i class="fa-brands fa-youtube"></i>YouTube</button>
+            </form>
+        </div>
+    </div>
 
-    <!-- Reddit -->
-    <form action="https://www.reddit.com/search/" method="get" class="search-form" target="_blank">
-        <input name="q" placeholder="Search Reddit" required autocomplete="off">
-        <button type="submit" class="reddit"><i class="fa-brands fa-reddit-alien"></i>Reddit</button>
-    </form>
+    <!-- SOCIAL -->
+    <div class="category-card cat-social">
+        <div class="category-header">
+            <div class="category-icon"><i class="fa-solid fa-users"></i></div>
+            <span class="category-title">Social</span>
+            <span class="category-count">2 platforms</span>
+        </div>
+        <div class="search-row">
+            <form class="search-form"
+                  data-platform="Google" data-icon="fa-brands fa-google"
+                  data-url="https://www.google.com/search" data-param="q"
+                  data-color="linear-gradient(135deg,#4285F4,#1a73e8)">
+                <input placeholder="Search Google…" required autocomplete="off">
+                <button type="submit" class="btn-google"><i class="fa-brands fa-google"></i>Google</button>
+            </form>
+        </div>
+        <div class="search-row">
+            <form class="search-form"
+                  data-platform="Reddit" data-icon="fa-brands fa-reddit-alien"
+                  data-url="https://www.reddit.com/search/" data-param="q"
+                  data-color="linear-gradient(135deg,#ff4500,#e03d00)">
+                <input placeholder="Search Reddit…" required autocomplete="off">
+                <button type="submit" class="btn-reddit"><i class="fa-brands fa-reddit-alien"></i>Reddit</button>
+            </form>
+        </div>
+    </div>
 
-    <!-- GitHub -->
-    <form action="https://github.com/search" method="get" class="search-form" target="_blank">
-        <input name="q" placeholder="Search GitHub" required autocomplete="off">
-        <button type="submit" class="github"><i class="fa-brands fa-github"></i>GitHub</button>
-    </form>
+    <!-- DEV -->
+    <div class="category-card cat-dev">
+        <div class="category-header">
+            <div class="category-icon"><i class="fa-solid fa-code"></i></div>
+            <span class="category-title">Dev</span>
+            <span class="category-count">1 platform</span>
+        </div>
+        <div class="search-row">
+            <form class="search-form"
+                  data-platform="GitHub" data-icon="fa-brands fa-github"
+                  data-url="https://github.com/search" data-param="q"
+                  data-color="linear-gradient(135deg,#555,#111)">
+                <input placeholder="Search GitHub…" required autocomplete="off">
+                <button type="submit" class="btn-github"><i class="fa-brands fa-github"></i>GitHub</button>
+            </form>
+        </div>
+    </div>
 
-    <!-- Pinterest -->
-    <form action="https://www.pinterest.com/search/pins/" method="get" class="search-form" target="_blank">
-        <input name="q" placeholder="Search Pinterest" required autocomplete="off">
-        <button type="submit" class="pinterest"><i class="fa-brands fa-pinterest"></i>Pinterest</button>
-    </form>
-    
-    <!-- Version -->
-    <div class="version">Version 1.0.0.0</div>
+    <!-- CREATIVE -->
+    <div class="category-card cat-creative">
+        <div class="category-header">
+            <div class="category-icon"><i class="fa-solid fa-palette"></i></div>
+            <span class="category-title">Creative</span>
+            <span class="category-count">1 platform</span>
+        </div>
+        <div class="search-row">
+            <form class="search-form"
+                  data-platform="Pinterest" data-icon="fa-brands fa-pinterest"
+                  data-url="https://www.pinterest.com/search/pins/" data-param="q"
+                  data-color="linear-gradient(135deg,#e60023,#b8001c)">
+                <input placeholder="Search Pinterest…" required autocomplete="off">
+                <button type="submit" class="btn-pinterest"><i class="fa-brands fa-pinterest"></i>Pinterest</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="version">Version 2.1.0</div>
 </div>
 
-    
 <!-- Floating Suggestion Button -->
 <div class="floating-container">
     <button class="floating-button" title="Send Suggestion" aria-label="Send Suggestion">
@@ -62,30 +441,22 @@
     </button>
 </div>
 
-<!-- Modal Overlay with Suggestion Form -->
+<!-- Suggestion Modal -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="suggestion-form">
-        <div class="success-message" id="successMessage">
-            <i class="fa-solid fa-check-circle"></i> Thank you! Your suggestion has been sent.
-        </div>
-        
         <h3>💡 Suggest for future updates</h3>
-        
         <div class="form-group">
-            <label for="name">Your Name</label>
-            <input type="text" id="name" placeholder="Enter your name" required>
+            <label>Your Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
         </div>
-        
         <div class="form-group">
-            <label for="email">Your Email</label>
-            <input type="email" id="email" placeholder="your.email@example.com" required>
+            <label>Your Email</label>
+            <input type="email" id="email" placeholder="your.email@example.com">
         </div>
-        
         <div class="form-group">
-            <label for="message">Your Suggestion</label>
-            <textarea id="message" placeholder="Tell us about your feature idea or feedback..." required></textarea>
+            <label>Your Suggestion</label>
+            <textarea id="message" placeholder="Tell us about your feature idea or feedback..."></textarea>
         </div>
-        
         <div class="form-buttons">
             <button type="button" id="sendSuggestion" class="btn-send">
                 <i class="fa-solid fa-paper-plane"></i> Send Suggestion
@@ -97,8 +468,196 @@
     </div>
 </div>
 
-<!-- Custom JavaScript -->
-<script src="script.js"></script>
+<!-- Results Popup -->
+<div class="results-overlay" id="resultsOverlay">
+    <div class="results-popup">
+        <div class="results-header">
+            <div class="platform-badge" id="platformBadge">
+                <i id="platformIcon"></i>
+                <span id="platformName"></span>
+            </div>
+            <div class="search-label">Results for: <strong id="searchTermLabel"></strong></div>
+            <a class="open-btn" id="openInBrowserBtn" href="#" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Browser
+            </a>
+            <button class="close-btn" id="closeResults" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="iframe-wrapper">
+            <div class="iframe-loader" id="iframeLoader">
+                <div class="loader-spinner"></div>
+                <div class="loader-text">Loading results…</div>
+            </div>
+            <div class="blocked-notice" id="blockedNotice">
+                <div class="blocked-icon" id="blockedIcon">🔒</div>
+                <h4 id="blockedTitle">Results can't load here</h4>
+                <p id="blockedMsg">This site blocks embedding for security reasons.</p>
+                <a class="open-full-btn" id="openFullBtn" href="#" target="_blank" rel="noopener">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Results in Browser
+                </a>
+            </div>
+            <iframe id="resultsFrame" title="Search Results"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+        </div>
+    </div>
+</div>
 
+<script>
+window.addEventListener("pageshow", e => { if (e.persisted) window.location.reload(); });
+window.addEventListener("pageshow", () => {
+    document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+});
+
+const BLOCKED = {
+    "YouTube":   { icon:"▶️", title:"YouTube blocks embedding",   msg:"YouTube doesn't allow its results to be shown inside other pages. Click below to open your search in a new tab." },
+    "Google":    { icon:"🔍", title:"Google blocks embedding",    msg:"Google search results can't be embedded. Click below to open your search directly on Google." },
+    "Reddit":    { icon:"👽", title:"Reddit blocks embedding",    msg:"Reddit won't load inside an embedded frame. Click below to open the results in a new tab." },
+    "GitHub":    { icon:"🐙", title:"GitHub blocks embedding",    msg:"GitHub blocks in-page embedding. Click below to view results in a new tab." },
+    "Pinterest": { icon:"📌", title:"Pinterest blocks embedding", msg:"Pinterest doesn't allow embedded viewing. Click below to open your results in a new tab." }
+};
+
+const resultsOverlay   = document.getElementById("resultsOverlay");
+const platformBadge    = document.getElementById("platformBadge");
+const platformIcon     = document.getElementById("platformIcon");
+const platformName     = document.getElementById("platformName");
+const searchTermLabel  = document.getElementById("searchTermLabel");
+const openInBrowserBtn = document.getElementById("openInBrowserBtn");
+const closeResultsBtn  = document.getElementById("closeResults");
+const iframeLoader     = document.getElementById("iframeLoader");
+const blockedNotice    = document.getElementById("blockedNotice");
+const blockedIcon      = document.getElementById("blockedIcon");
+const blockedTitle     = document.getElementById("blockedTitle");
+const blockedMsg       = document.getElementById("blockedMsg");
+const openFullBtn      = document.getElementById("openFullBtn");
+const resultsFrame     = document.getElementById("resultsFrame");
+
+function openResults(platform, color, iconClass, query, url) {
+    platformBadge.style.background = color;
+    platformIcon.className = iconClass;
+    platformName.textContent = platform;
+    searchTermLabel.textContent = `"${query}"`;
+    openInBrowserBtn.href = url;
+    openFullBtn.href = url;
+
+    iframeLoader.classList.add("hidden");
+    resultsFrame.src = "";
+
+    const info = BLOCKED[platform];
+    if (info) {
+        blockedIcon.textContent  = info.icon;
+        blockedTitle.textContent = info.title;
+        blockedMsg.textContent   = info.msg;
+        blockedNotice.classList.add("visible");
+        resultsFrame.style.display = "none";
+    } else {
+        blockedNotice.classList.remove("visible");
+        resultsFrame.style.display = "block";
+        iframeLoader.classList.remove("hidden");
+        resultsFrame.onload = function() {
+            try {
+                const doc = resultsFrame.contentDocument || resultsFrame.contentWindow.document;
+                if (!doc || doc.title === "") throw new Error("blocked");
+                iframeLoader.classList.add("hidden");
+            } catch(e) {
+                iframeLoader.classList.add("hidden");
+                resultsFrame.style.display = "none";
+                blockedIcon.textContent  = "🔒";
+                blockedTitle.textContent = "Couldn't load results";
+                blockedMsg.textContent   = "This site blocks in-page embedding. Open in your browser instead.";
+                blockedNotice.classList.add("visible");
+            }
+        };
+        setTimeout(() => { resultsFrame.src = url; }, 50);
+    }
+
+    resultsOverlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+}
+
+function closeResults() {
+    resultsOverlay.classList.remove("active");
+    document.body.style.overflow = "";
+    resultsFrame.src = "";
+    iframeLoader.classList.remove("hidden");
+    blockedNotice.classList.remove("visible");
+    resultsFrame.style.display = "block";
+}
+
+closeResultsBtn.addEventListener("click", closeResults);
+resultsOverlay.addEventListener("click", e => { if (e.target === resultsOverlay) closeResults(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && resultsOverlay.classList.contains("active")) closeResults(); });
+
+// Wire search forms — forms use display:contents so we listen on the wrapper div
+document.querySelectorAll(".search-form").forEach(form => {
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const input = form.querySelector("input");
+        const query = input.value.trim();
+        if (!query) return;
+        const url = `${form.dataset.url}?${form.dataset.param}=${encodeURIComponent(query)}`;
+        openResults(form.dataset.platform, form.dataset.color, form.dataset.icon, query, url);
+    });
+});
+
+// Suggestion modal
+const modalOverlay = document.getElementById("modalOverlay");
+const floatingBtn  = document.querySelector(".floating-button");
+const closeBtn     = document.getElementById("closeForm");
+const sendBtn      = document.getElementById("sendSuggestion");
+const nameInput    = document.getElementById("name");
+const emailInput   = document.getElementById("email");
+const messageInput = document.getElementById("message");
+
+const openModal  = () => { modalOverlay.classList.add("active"); document.body.style.overflow = "hidden"; };
+const closeModal = () => { modalOverlay.classList.remove("active"); document.body.style.overflow = ""; };
+const isValidEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+function sendSuggestion() {
+    const name    = nameInput.value.trim();
+    const email   = emailInput.value.trim();
+    const message = messageInput.value.trim();
+
+    if (!name || !email || !message) {
+        Swal.fire({ icon:"warning", title:"Missing Information", text:"Please fill in all fields!", confirmButtonColor:"#ffcc00" });
+        return;
+    }
+    if (!isValidEmail(email)) {
+        Swal.fire({ icon:"error", title:"Invalid Email", text:"Please enter a valid email address!", confirmButtonColor:"#ffcc00" });
+        return;
+    }
+
+    const subject = encodeURIComponent("Product Feedback | Smart Search Hub");
+    const body    = encodeURIComponent(
+        `SMART SEARCH HUB – PRODUCT FEEDBACK\n==================================\n\n` +
+        `Submitted By:\n• Name  : ${name}\n• Email : ${email}\n\n` +
+        `Feedback Details:\n${message}\n\n==================================\nGenerated automatically via Smart Search Hub\n`
+    );
+
+    try {
+        window.location.href = `mailto:nelbanbetache@gmail.com?subject=${subject}&body=${body}`;
+        Swal.fire({
+            icon:"success", title:"Success!",
+            text:"Your suggestion has been sent. Thank you!",
+            confirmButtonColor:"#4CAF50", timer:3000, timerProgressBar:true
+        }).then(() => {
+            nameInput.value = ""; emailInput.value = ""; messageInput.value = "";
+            closeModal();
+        });
+    } catch(err) {
+        Swal.fire({
+            icon:"error", title:"Error",
+            html:"Unable to open email client.<br>Please email us directly at:<br><strong>nelbanbetache@gmail.com</strong>",
+            confirmButtonColor:"#ffcc00"
+        });
+    }
+}
+
+floatingBtn.addEventListener("click", openModal);
+closeBtn.addEventListener("click", closeModal);
+sendBtn.addEventListener("click", sendSuggestion);
+modalOverlay.addEventListener("click", e => { if (e.target === modalOverlay) closeModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && modalOverlay.classList.contains("active")) closeModal(); });
+</script>
 </body>
 </html>
